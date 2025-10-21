@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS System - Thermal Printer 58mm</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            padding: 30px;
+        }
+        
+        .products-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .product-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .product-card h3 {
+            font-size: 1em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .product-card .price {
+            font-size: 1.2em;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .cart-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .cart-section h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .cart-items {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        
+        .cart-item {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .cart-item-info {
+            flex: 1;
+        }
+        
+        .cart-item-actions {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+        
+        .qty-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .qty-btn:hover {
+            background: #5568d3;
+        }
+        
+        .remove-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        .remove-btn:hover {
+            background: #c82333;
+        }
+        
+        .voucher-section {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .voucher-section h3 {
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            color: #555;
+        }
+        
+        .voucher-input-group {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .voucher-input-group input {
+            flex: 1;
+            padding: 8px;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+        
+        .voucher-input-group button {
+            padding: 8px 15px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .voucher-input-group button:hover {
+            background: #218838;
+        }
+        
+        .voucher-applied {
+            margin-top: 10px;
+            padding: 8px;
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            border-radius: 4px;
+            font-size: 0.85em;
+            color: #155724;
+        }
+        
+        .payment-section {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .payment-section h3 {
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            color: #555;
+        }
+        
+        .form-group {
+            margin-bottom: 10px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.85em;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        
+        .change-display {
+            background: #fff3cd;
+            padding: 12px;
+            border-radius: 5px;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #856404;
+        }
+        
+        .cart-total {
+            border-top: 2px solid #dee2e6;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+        
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .total-row.discount {
+            color: #28a745;
+        }
+        
+        .total-row.grand-total {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-print {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-print:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-print:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-clear {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-clear:hover {
+            background: #c82333;
+        }
+        
+        .status-message {
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .printer-config {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .printer-config h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            
+            .cart-section {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏪 POS System</h1>
+            <p>Sistem Kasir dengan Printer Thermal 58mm</p>
+        </div>
+        
+        <div class="content">
+            <div class="products-section">
+                <div class="printer-config">
+                    <h3>⚙️ Konfigurasi Toko</h3>
+                    <div class="form-group">
+                        <label>Nama Toko:</label>
+                        <input type="text" id="storeName" value="TOKO SAYA" placeholder="Nama Toko">
+                    </div>
+                    <div class="form-group">
+                        <label>Alamat Toko:</label>
+                        <input type="text" id="storeAddress" value="Jl. Contoh No. 123" placeholder="Alamat Toko">
+                    </div>
+                    <div class="form-group">
+                        <label>No. Telepon:</label>
+                        <input type="text" id="storePhone" value="0812-3456-7890" placeholder="No. Telepon">
+                    </div>
+                </div>
+                
+                <h2>🛍️ Produk</h2>
+                <div class="product-grid" id="productGrid"></div>
+            </div>
+            
+            <div class="cart-section">
+                <h2>🛒 Keranjang</h2>
+                <div class="cart-items" id="cartItems"></div>
+                
+                <div class="voucher-section">
+                    <h3>🎫 Kode Voucher</h3>
+                    <div class="voucher-input-group">
+                        <input type="text" id="voucherCode" placeholder="Masukkan kode voucher" style="text-transform: uppercase;">
+                        <button onclick="applyVoucher()">Terapkan</button>
+                    </div>
+                    <div id="voucherApplied"></div>
+                </div>
+                
+                <div class="cart-total">
+                    <div class="total-row">
+                        <span>Subtotal:</span>
+                        <span id="subtotal">Rp 0</span>
+                    </div>
+                    <div class="total-row discount" id="discountRow" style="display:none;">
+                        <span>Diskon:</span>
+                        <span id="discount">- Rp 0</span>
+                    </div>
+                    <div class="total-row grand-total">
+                        <span>TOTAL:</span>
+                        <span id="grandTotal">Rp 0</span>
+                    </div>
+                </div>
+                
+                <div class="payment-section">
+                    <h3>💰 Pembayaran Tunai</h3>
+                    <div class="form-group">
+                        <label>Jumlah Bayar:</label>
+                        <input type="number" id="cashAmount" placeholder="0" oninput="calculateChange()">
+                    </div>
+                    <div class="change-display" id="changeDisplay" style="display:none;">
+                        Kembalian: <span id="changeAmount">Rp 0</span>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-print" id="printBtn" onclick="printReceipt()" disabled>🖨️ Cetak Struk</button>
+                    <button class="btn btn-clear" onclick="clearCart()">🗑️ Hapus Semua</button>
+                </div>
+                
+                <div id="statusMessage"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data produk
+        const products = [
+            { id: 1, name: 'Nasi Goreng', price: 15000 },
+            { id: 2, name: 'Mie Goreng', price: 12000 },
+            { id: 3, name: 'Ayam Goreng', price: 18000 },
+            { id: 4, name: 'Es Teh', price: 5000 },
+            { id: 5, name: 'Es Jeruk', price: 6000 },
+            { id: 6, name: 'Kopi', price: 8000 },
+            { id: 7, name: 'Soto Ayam', price: 16000 },
+            { id: 8, name: 'Bakso', price: 15000 },
+            { id: 9, name: 'Gado-gado', price: 12000 },
+            { id: 10, name: 'Sate Ayam', price: 20000 },
+            { id: 11, name: 'Nasi Uduk', price: 13000 },
+            { id: 12, name: 'Siomay', price: 14000 }
+        ];
+
+        // Data voucher
+        const vouchers = {
+            'DISKON10': { type: 'percentage', value: 10, name: 'Diskon 10%' },
+            'DISKON20': { type: 'percentage', value: 20, name: 'Diskon 20%' },
+            'DISKON50': { type: 'percentage', value: 50, name: 'Diskon 50%' },
+            'HEMAT10K': { type: 'fixed', value: 10000, name: 'Potongan Rp 10.000' },
+            'HEMAT25K': { type: 'fixed', value: 25000, name: 'Potongan Rp 25.000' },
+            'HEMAT50K': { type: 'fixed', value: 50000, name: 'Potongan Rp 50.000' }
+        };
+
+        // State
+        let cart = [];
+        let appliedVoucher = null;
+
+        // Inisialisasi
+        function init() {
+            renderProducts();
+            updateCart();
+        }
+
+        // Render produk
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = products.map(product => `
+                <div class="product-card" onclick="addToCart(${product.id})">
+                    <h3>${product.name}</h3>
+                    <div class="price">Rp ${formatNumber(product.price)}</div>
+                </div>
+            `).join('');
+        }
+
+        // Tambah ke keranjang
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.qty++;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            
+            updateCart();
+        }
+
+        // Update tampilan keranjang
+        function updateCart() {
+            const cartItemsDiv = document.getElementById('cartItems');
+            
+            if (cart.length === 0) {
+                cartItemsDiv.innerHTML = '<p style="text-align:center;color:#999;">Keranjang kosong</p>';
+            } else {
+                cartItemsDiv.innerHTML = cart.map((item, index) => `
+                    <div class="cart-item">
+                        <div class="cart-item-info">
+                            <strong>${item.name}</strong><br>
+                            <small>Rp ${formatNumber(item.price)} x ${item.qty}</small>
+                        </div>
+                        <div class="cart-item-actions">
+                            <button class="qty-btn" onclick="decreaseQty(${index})">-</button>
+                            <span style="margin: 0 5px;">${item.qty}</span>
+                            <button class="qty-btn" onclick="increaseQty(${index})">+</button>
+                            <button class="remove-btn" onclick="removeItem(${index})">×</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            updateTotals();
+            calculateChange();
+        }
+
+        // Kurangi qty
+        function decreaseQty(index) {
+            if (cart[index].qty > 1) {
+                cart[index].qty--;
+            } else {
+                cart.splice(index, 1);
+            }
+            updateCart();
+        }
+
+        // Tambah qty
+        function increaseQty(index) {
+            cart[index].qty++;
+            updateCart();
+        }
+
+        // Hapus item
+        function removeItem(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        // Apply voucher
+        function applyVoucher() {
+            const code = document.getElementById('voucherCode').value.toUpperCase().trim();
+            
+            if (!code) {
+                showStatus('Masukkan kode voucher!', 'error');
+                return;
+            }
+            
+            if (cart.length === 0) {
+                showStatus('Keranjang masih kosong!', 'error');
+                return;
+            }
+            
+            const voucher = vouchers[code];
+            
+            if (voucher) {
+                appliedVoucher = { code, ...voucher };
+                document.getElementById('voucherApplied').innerHTML = `
+                    <div class="voucher-applied">
+                        ✓ ${voucher.name} diterapkan
+                        <button onclick="removeVoucher()" style="float:right;background:none;border:none;color:#721c24;cursor:pointer;font-weight:bold;">×</button>
+                    </div>
+                `;
+                document.getElementById('voucherCode').value = '';
+                updateTotals();
+                showStatus('Voucher berhasil diterapkan!', 'success');
+            } else {
+                showStatus('Kode voucher tidak valid!', 'error');
+            }
+        }
+
+        // Remove voucher
+        function removeVoucher() {
+            appliedVoucher = null;
+            document.getElementById('voucherApplied').innerHTML = '';
+            updateTotals();
+            showStatus('Voucher dihapus', 'success');
+        }
+
+        // Update total
+        function updateTotals() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            let discount = 0;
+            
+            if (appliedVoucher) {
+                if (appliedVoucher.type === 'percentage') {
+                    discount = subtotal * (appliedVoucher.value / 100);
+                } else {
+                    discount = appliedVoucher.value;
+                }
+                
+                // Pastikan diskon tidak melebihi subtotal
+                if (discount > subtotal) {
+                    discount = subtotal;
+                }
+            }
+            
+            const grandTotal = subtotal - discount;
+            
+            document.getElementById('subtotal').textContent = 'Rp ' + formatNumber(subtotal);
+            
+            if (discount > 0) {
+                document.getElementById('discountRow').style.display = 'flex';
+                document.getElementById('discount').textContent = '- Rp ' + formatNumber(discount);
+            } else {
+                document.getElementById('discountRow').style.display = 'none';
+            }
+            
+            document.getElementById('grandTotal').textContent = 'Rp ' + formatNumber(grandTotal);
+        }
+
+        // Calculate change
+        function calculateChange() {
+            const cashAmount = parseFloat(document.getElementById('cashAmount').value) || 0;
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            let discount = 0;
+            
+            if (appliedVoucher) {
+                if (appliedVoucher.type === 'percentage') {
+                    discount = subtotal * (appliedVoucher.value / 100);
+                } else {
+                    discount = appliedVoucher.value;
+                }
+                if (discount > subtotal) discount = subtotal;
+            }
+            
+            const grandTotal = subtotal - discount;
+            const change = cashAmount - grandTotal;
+            
+            const changeDisplay = document.getElementById('changeDisplay');
+            const printBtn = document.getElementById('printBtn');
+            
+            if (cashAmount > 0) {
+                changeDisplay.style.display = 'block';
+                if (change >= 0) {
+                    document.getElementById('changeAmount').textContent = 'Rp ' + formatNumber(change);
+                    changeDisplay.style.background = '#d4edda';
+                    changeDisplay.style.color = '#155724';
+                    printBtn.disabled = cart.length === 0;
+                } else {
+                    document.getElementById('changeAmount').textContent = 'Kurang Rp ' + formatNumber(Math.abs(change));
+                    changeDisplay.style.background = '#f8d7da';
+                    changeDisplay.style.color = '#721c24';
+                    printBtn.disabled = true;
+                }
+            } else {
+                changeDisplay.style.display = 'none';
+                printBtn.disabled = true;
+            }
+        }
+
+        // Format angka
+        function formatNumber(num) {
+            return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        // Clear cart
+        function clearCart() {
+            if (confirm('Hapus semua item dari keranjang?')) {
+                cart = [];
+                appliedVoucher = null;
+                document.getElementById('voucherApplied').innerHTML = '';
+                document.getElementById('voucherCode').value = '';
+                document.getElementById('cashAmount').value = '';
+                document.getElementById('changeDisplay').style.display = 'none';
+                updateCart();
+            }
+        }
+
+        // Print receipt
+        function printReceipt() {
+            if (cart.length === 0) {
+                showStatus('Keranjang masih kosong!', 'error');
+                return;
+            }
+
+            const cashAmount = parseFloat(document.getElementById('cashAmount').value) || 0;
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            let discount = 0;
+            
+            if (appliedVoucher) {
+                if (appliedVoucher.type === 'percentage') {
+                    discount = subtotal * (appliedVoucher.value / 100);
+                } else {
+                    discount = appliedVoucher.value;
+                }
+                if (discount > subtotal) discount = subtotal;
+            }
+            
+            const grandTotal = subtotal - discount;
+            const change = cashAmount - grandTotal;
+
+            if (change < 0) {
+                showStatus('Uang bayar kurang!', 'error');
+                return;
+            }
+
+            const storeName = document.getElementById('storeName').value;
+            const storeAddress = document.getElementById('storeAddress').value;
+            const storePhone = document.getElementById('storePhone').value;
+
+            // ESC/POS Commands
+            const ESC = '\x1B';
+            const GS = '\x1D';
+            
+            // Initialize printer
+            let receipt = ESC + '@';
+            
+            // Header - Center align
+            receipt += ESC + 'a' + '\x01';
+            receipt += ESC + '!' + '\x10';
+            receipt += storeName + '\n';
+            receipt += ESC + '!' + '\x00';
+            receipt += storeAddress + '\n';
+            receipt += 'Telp: ' + storePhone + '\n';
+            receipt += '================================\n';
+            
+            // Transaction info - Left align
+            receipt += ESC + 'a' + '\x00';
+            const now = new Date();
+            receipt += 'Tanggal: ' + now.toLocaleDateString('id-ID') + '\n';
+            receipt += 'Waktu  : ' + now.toLocaleTimeString('id-ID') + '\n';
+            receipt += 'No. Inv: ' + generateInvoiceNumber() + '\n';
+            receipt += '================================\n';
+            
+            // Items
+            cart.forEach(item => {
+                const itemName = item.name.padEnd(20, ' ');
+                const qty = item.qty.toString().padStart(2, ' ');
+                const price = formatNumber(item.price * item.qty).padStart(10, ' ');
+                receipt += itemName.substring(0, 20) + '\n';
+                receipt += '  ' + qty + ' x ' + formatNumber(item.price) + ' = ' + price + '\n';
+            });
+            
+            receipt += '--------------------------------\n';
+            
+            // Totals
+            receipt += 'Subtotal:' + formatNumber(subtotal).padStart(24, ' ') + '\n';
+            
+            if (discount > 0) {
+                receipt += 'Diskon';
+                if (appliedVoucher) {
+                    receipt += ' (' + appliedVoucher.code + ')';
+                }
+                receipt += ':' + formatNumber(discount).padStart(24 - (appliedVoucher ? appliedVoucher.code.length + 3 : 0), ' ') + '\n';
+            }
+            
+            receipt += '================================\n';
+            receipt += ESC + '!' + '\x10';
+            receipt += 'TOTAL:' + formatNumber(grandTotal).padStart(27, ' ') + '\n';
+            receipt += ESC + '!' + '\x00';
+            receipt += '================================\n';
+            
+            // Payment
+            receipt += 'Bayar   :' + formatNumber(cashAmount).padStart(24, ' ') + '\n';
+            receipt += 'Kembalian:' + formatNumber(change).padStart(23, ' ') + '\n';
+            receipt += '================================\n';
+            
+            // Footer
+            receipt += ESC + 'a' + '\x01';
+            receipt += '\nTerima Kasih\n';
+            receipt += 'Selamat Berbelanja Kembali\n\n';
+            
+            // Cut paper
+            receipt += GS + 'V' + '\x41' + '\x00';
+            
+            // Send to printer
+            sendToPrinter(receipt);
+        }
+
+        // Generate invoice number
+        function generateInvoiceNumber() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+            return `INV${year}${month}${day}${random}`;
+        }
+
+        // Send to printer
+        function sendToPrinter(data) {
+            try {
+                const printWindow = window.open('', '', 'width=300,height=600');
+                printWindow.document.write('<html><head><title>Struk</title>');
+                printWindow.document.write('<style>');
+                printWindow.document.write('body { font-family: monospace; font-size: 12px; width: 58mm; margin: 0; padding: 10px; }');
+                printWindow.document.write('pre { white-space: pre-wrap; margin: 0; }');
+                printWindow.document.write('</style></head><body>');
+                printWindow.document.write('<pre>' + escapeHtml(data) + '</pre>');
+                printWindow.document.write('</body></html>');
+                printWindow.document.close();
+                
+                setTimeout(() => {
+                    printWindow.print();
+                    printWindow.close();
+                }, 250);
+                
+                showStatus('Struk berhasil dicetak!', 'success');
+                
+                setTimeout(() => {
+                    cart = [];
+                    appliedVoucher = null;
+                    document.getElementById('voucherApplied').innerHTML = '';
+                    document.getElementById('voucherCode').value = '';
+                    document.getElementById('cashAmount').value = '';
+                    document.getElementById('changeDisplay').style.display = 'none';
+                    updateCart();
+                }, 1000);
+                
+            } catch (error) {
+                showStatus('Error: ' + error.message, 'error');
+            }
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        // Show status message
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.className = 'status-message status-' + type;
+            statusDiv.textContent = message;
+            
+            setTimeout(() => {
+                statusDiv.textContent = '';
+                statusDiv.className = '';
+            }, 3000);
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>

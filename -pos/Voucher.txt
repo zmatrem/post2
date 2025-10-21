@@ -1,0 +1,6 @@
+DISKON10 → Diskon 10%
+DISKON20 → Diskon 20%
+DISKON50 → Diskon 50%
+HEMAT10K → Potongan Rp 10.000
+HEMAT25K → Potongan Rp 25.000
+HEMAT50K → Potongan Rp 50.000
